@@ -1,2 +1,5 @@
 __pycache__
 .DS_Store
+tuto/static/images/
+tuto/data.yml
+tuto/__pycache__/
