@@ -11,12 +11,11 @@ def loaddb(filename):
     
     # Chargement de notre jeu de données
     import yaml
-    with open(filename, 'r') as file:
-        books = yaml.safe_load(file)
-    
+    books = yaml.safe_load(open(filename))
+
     # Import des modèles
     from .models import Author, Book
-    
+
     # Première passe: création de tous les auteurs
     authors = {}
     for b in books:
@@ -25,7 +24,6 @@ def loaddb(filename):
             o = Author(name=a)
             db.session.add(o)
             authors[a] = o
-    
     db.session.commit()
     
     # Deuxième passe: création de tous les livres
@@ -37,5 +35,4 @@ def loaddb(filename):
                  img=b["img"],
                  author_id=a.id)
         db.session.add(o)
-    
     db.session.commit()
