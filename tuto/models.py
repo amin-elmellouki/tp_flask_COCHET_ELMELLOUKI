@@ -20,9 +20,9 @@ class Book(db.Model):
     def __repr__(self):
         return "<Book (%d) %s>" % (self.id, self.title)
 
-def get_sample ():
+def get_sample():
     return Book.query.limit(1000).all()
     #return Book.query.filter(Book.price < 15).all()
 
-def get_author ():
+def get_author(id):
     return Author.query.get(id)
