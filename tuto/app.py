@@ -1,10 +1,11 @@
 from flask import Flask
 from flask_bootstrap import Bootstrap5
+from flask import LoginManager
 
 app = Flask(__name__)
 app.config['BOOTSTRAP_SERVE_LOCAL'] = True
 bootstrap = Bootstrap5(app)
-
+login_manager = LoginManager(app)
 
 import os.path
 def mkpath(p):
