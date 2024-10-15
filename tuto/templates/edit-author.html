@@ -1,15 +1,28 @@
-{% extends "base.html" %}
+{% extends "baseBS.html" %}
 
 {% block main %}
-<h1>Edit Author: {{ author.name }}</h1>
-<form role="form" method="POST" action="{{ url_for('save_author') }}">
-    {{ form.hidden_tag() }}
-    
-    <div class="form-group">
-        {{ form.name.label }} 
-        {{ form.name(size=50, class_="form-control") }}
-    </div>
+<link rel="stylesheet" href="{{ url_for('static', filename='home.css')}}"> 
+{% endblock %}
 
-    <input class="btn btn-default" type="submit" value="Enregistrer">
-</form>
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Edit Author: {{ author.name }}</h1>
+    <form role="form" method="POST" action="{{ url_for('save_author') }}">
+        {{ form.hidden_tag() }}
+        
+        <div class="form-group">
+            {{ form.name.label(class="form-label") }} 
+            {{ form.name(size=50, class_="form-control", placeholder="Enter author name") }}
+            {% if form.name.errors %}
+                <div class="alert alert-danger mt-2">
+                    {% for error in form.name.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <button class="btn btn-primary mt-3" type="submit">Enregistrer</button>
+    </form>
+</div>
 {% endblock %}

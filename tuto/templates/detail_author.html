@@ -1,0 +1,18 @@
+{% extends 'baseBS.html' %}
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='home.css')}}"> 
+{% endblock %}
+{% block content %}
+<div class="card border-light mb-3 mycard">
+    <div class="card-header">{{ author.name }}</div>
+
+    <div class="card-body">
+            <h8 class="card-text card-footer">
+                    Auteur ID : {{ author.id }}
+            </h8>
+            
+            <a class="btn btn-primary" href="{{ url_for('edit_author', id=author.id) }}">Edit Author</a>
+    </div>
+</div>
+{% endblock %}
