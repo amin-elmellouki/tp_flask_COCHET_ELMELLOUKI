@@ -4,4 +4,4 @@ tuto/data.yml
 tuto/__pycache__/
 .nfs0000000060fc9f2b00000014
 myapp.db
-venv
+venv/
