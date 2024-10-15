@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_bootstrap import Bootstrap5
-from flask import LoginManager
+from flask_login import LoginManager
 
 app = Flask(__name__)
 app.config['BOOTSTRAP_SERVE_LOCAL'] = True
