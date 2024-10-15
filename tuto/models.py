@@ -1,6 +1,6 @@
 from .app import db
 from flask_login import UserMixin
-
+from .app import login_manager
 
 class Author (db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -34,3 +34,7 @@ def get_sample():
 
 def get_author(id):
     return Author.query.get(id)
+
+@login_manager.user_loader
+def load_user(username):
+    return User.query.get(username)
