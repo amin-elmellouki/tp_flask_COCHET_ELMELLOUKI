@@ -5,7 +5,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, HiddenField, PasswordField
 from wtforms.validators import DataRequired
 from hashlib import sha256
-from flask_login import login_user, current_user, logout_user
+from flask_login import login_user, current_user, logout_user, login_required
 from flask import request
 
 class AuthorForm(FlaskForm):
@@ -79,31 +79,44 @@ def one_author(id):
         "detail_author.html",
         author=a
     )
-
+   
 class LoginForm(FlaskForm):
-    username = StringField('Username')
-    password = PasswordField('Password')
-
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    next = HiddenField()
+    
     def get_authenticated_user(self):
-        user = User.query.get(self.username.data)
-        if user is None:
-            return None
-        m = sha256()
-        m.update(self.password.data.encode())
-        passwd = m.hexdigest()
-        return user if passwd == user.password else None
+        user = User.query.filter_by(username=self.username.data).first()
+        if user:
+            m = sha256()
+            m.update(self.password.data.encode())
+            hashed_password = m.hexdigest()
+            if hashed_password == user.password:
+                return user
+        return None
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/login/", methods=["GET", "POST"])
 def login():
     f = LoginForm()
-    if f.validate_on_submit():
+
+    if not f.is_submitted():
+        f.next.data = request.args.get("next")
+    elif f.validate_on_submit():
         user = f.get_authenticated_user()
         if user:
             login_user(user)
-            return redirect(url_for("home"))
+            next_page = f.next.data or url_for("home")
+            return redirect(next_page)
+    
     return render_template("login.html", form=f)
 
 @app.route("/logout")
 def logout():
     logout_user()
     return redirect(url_for("home"))
+
+@app.route("/authors")
+@login_required # Pour que cette page ne soit dispo que pour les users
+def list_authors():
+    authors = Author.query.all()  
+    return render_template("list_author.html", authors=authors)
