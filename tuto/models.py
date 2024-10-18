@@ -1,6 +1,10 @@
-from .app import db
 from flask_login import UserMixin
-from .app import login_manager
+from .app import db, login_manager
+
+
+class favorites(db.Model):
+    user_id = db.Column(db.String(50), db.ForeignKey('user.username'), primary_key=True)
+    book_id = db.Column(db.Integer, db.ForeignKey('book.id'), primary_key=True)
 
 class Author (db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -25,15 +29,25 @@ class Book(db.Model):
 class User(db.Model, UserMixin):
     username = db.Column(db.String(50), primary_key=True)
     password = db.Column(db.String(64))
+    favorite_books = db.relationship('Book', secondary='favorites', backref=db.backref('users_who_favorited', lazy='dynamic'))
 
     def get_id(self):
         return self.username
 
-def get_sample():
-    return Book.query.limit(1000).all()
+def get_book(id):
+    return Book.query.get(id)
+
+def get_all_books():
+    return Book.query.all()
 
 def get_author(id):
     return Author.query.get(id)
+
+def get_all_authors():
+    return Author.query.all()
+
+def get_favorite_books(user):
+    return user.favorite_books
 
 @login_manager.user_loader
 def load_user(username):
