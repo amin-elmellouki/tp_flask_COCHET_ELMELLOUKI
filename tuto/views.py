@@ -69,7 +69,7 @@ def save_author():
         return redirect(url_for('one_author', id=author.id))
 
     return render_template("add-author.html", form=form)
-
+  
 @app.route("/one_author/<int:id>")
 def one_author(id):
     a = get_author(id)
@@ -79,7 +79,7 @@ def one_author(id):
         "detail_author.html",
         author=a
     )
-   
+
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
