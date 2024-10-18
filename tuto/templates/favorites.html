@@ -1,0 +1,15 @@
+{% extends 'baseBS.html' %}
+
+{% block styles %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+{% endblock %}
+
+{% block content %}
+  <h1>Favorite Books</h1>
+  {% for book in books %}
+    <a href="{{ url_for('detail', id=book.id) }}">
+      <img src="{{ url_for('static', filename='images/' + book.img) }}" alt="{{ book.title }}" title="{{ book.title }}">
+    </a>
+  {% endfor %}
+{% endblock %}

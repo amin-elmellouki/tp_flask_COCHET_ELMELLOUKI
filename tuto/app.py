@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, session
 from flask_bootstrap import Bootstrap5
 from flask_login import LoginManager
 
@@ -22,3 +22,12 @@ app.config["SQLALCHEMY_DATABASE_URI"] = (
 db = SQLAlchemy(app)
 
 app. config['SECRET_KEY'] = "3d02d25c-55ef-406a-b13d-666ef614b30c"
+
+flash_messages_cleared = False 
+@app.before_request
+def clear_flash_messages():
+    """Efface uniquement les messages flash pour chaque utilisateur, une seule fois par session"""
+    global flash_messages_cleared
+    if not flash_messages_cleared:
+        session.pop('_flashes', None)
+        flash_messages_cleared = True

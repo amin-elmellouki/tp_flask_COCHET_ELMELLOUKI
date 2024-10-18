@@ -1,12 +1,11 @@
-from flask import url_for, redirect, render_template, flash
-from .app import app, db
-from .models import Author, get_author, get_sample, User
+from flask import url_for, redirect, render_template, flash, request
+from flask_login import login_user, current_user, logout_user, login_required
 from flask_wtf import FlaskForm
 from wtforms import StringField, HiddenField, PasswordField
 from wtforms.validators import DataRequired
 from hashlib import sha256
-from flask_login import login_user, current_user, logout_user, login_required
-from flask import request
+from .app import app, db
+from .models import Author, User, get_author, get_all_authors, get_book, get_all_books, get_favorite_books
 
 class AuthorForm(FlaskForm):
     id = HiddenField('id') 
@@ -17,13 +16,14 @@ def home():
     return render_template(
         "booksBS.html",
         title="My Books !",
-        books=get_sample()
+        books=get_all_books()
     )
 
-@app.route("/detail/<id>")
+@app.route("/detail/<int:id>")
 def detail(id):
-    books = get_sample()
-    book = books[int(id)-1]
+    book = get_book(id)
+    if not book:
+        return "Book not found", 404
     return render_template("detail.html", book=book)
 
 @app.route("/add/author", methods=["GET", "POST"])
@@ -116,7 +116,30 @@ def logout():
     return redirect(url_for("home"))
 
 @app.route("/authors")
-@login_required # Pour que cette page ne soit dispo que pour les users
+@login_required
 def list_authors():
-    authors = Author.query.all()  
+    authors = get_all_authors() 
     return render_template("list_author.html", authors=authors)
+
+
+@app.route("/add/favorites/<int:book_id>", methods=["POST"])
+@login_required
+def add_favorite(book_id):
+    book = get_book(book_id)
+    if not book:
+        return "Book not found", 404
+    if book not in current_user.favorite_books:
+        current_user.favorite_books.append(book)
+        db.session.commit()
+        flash(f"'{book.title}' a été ajouté à vos favoris.", 'success')
+    else:
+        flash(f"'{book.title}' est déjà dans vos favoris.", 'info')
+    return redirect(url_for("detail", id=book_id))
+
+
+
+@app.route('/favorites')
+@login_required
+def list_fav():
+    favorites = get_favorite_books(current_user)
+    return render_template('favorites.html', books=favorites)

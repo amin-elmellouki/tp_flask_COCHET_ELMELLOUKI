@@ -3,13 +3,14 @@
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='home.css')}}"> 
 {% endblock %}
+
 {% block content %}
 <div class="card border-light mb-3 mycard">
     <div class="card-header">{{ book.title }}</div>
 
-        <img src="{{ url_for('static', filename='images/'+book.img) }}" alt="Couverture de {{ book.title }}"
-             title="{{ book.title }}" class="card-img-top" 
-        />
+    <img src="{{ url_for('static', filename='images/'+book.img) }}" alt="Couverture de {{ book.title }}"
+         title="{{ book.title }}" class="card-img-top" 
+    />
 
     <div class="card-body">
         <h5 class="card-text card-footer">
@@ -22,6 +23,10 @@
 
         <form action="{{ url_for('one_author', id=book.author_id) }}" method="GET">
             <button type="submit" class="btn btn-primary mt-3">Afficher détail auteur</button>
+        </form>
+
+        <form action="{{ url_for('add_favorite', book_id=book.id) }}" method="POST" class="mt-3">
+            <button type="submit" class="btn btn-success">Ajouter aux favoris</button>
         </form>
 
         <h6 class="card-text card-footer">
