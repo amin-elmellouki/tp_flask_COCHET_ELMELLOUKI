@@ -38,11 +38,12 @@
                     </ul>
                     
                     <!-- Barre de recherche -->
-                    <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <form class="d-flex" role="search" action="{{ search_route }}" method="GET">
+                        <input class="form-control me-2" type="search" name="search" placeholder="Search" aria-label="Search">
                         <button class="btn btn-outline-success" type="submit">Search</button>
                     </form>
 
+                    
                     <!-- Ajout du menu utilisateur à droite -->
                     <ul class="navbar-nav navbar-right">
                         {% if current_user.is_authenticated %}
