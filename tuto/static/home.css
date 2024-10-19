@@ -31,3 +31,9 @@ div.mycard{
     margin: auto; 
     width: 18rem; 
 }
+
+.custom-img {
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+}
