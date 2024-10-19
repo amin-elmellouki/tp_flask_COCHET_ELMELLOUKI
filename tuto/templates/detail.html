@@ -5,33 +5,44 @@
 {% endblock %}
 
 {% block content %}
-<div class="card border-light mb-3 mycard">
-    <div class="card-header">{{ book.title }}</div>
+<div class="container mt-5">
+    <div class="row">
+        <!-- Colonne pour l'image du livre -->
+        <div class="col-md-3">
+            <img src="{{ url_for('static', filename='images/'+book.img) }}" alt="Couverture de {{ book.title }}"
+                 title="{{ book.title }}" class="custom-img rounded">
+        </div>
 
-    <img src="{{ url_for('static', filename='images/'+book.img) }}" alt="Couverture de {{ book.title }}"
-         title="{{ book.title }}" class="card-img-top" 
-    />
+        <!-- Colonne pour les détails et actions -->
+        <div class="col-md-8">
+            <h2 class="mb-3">{{ book.title }}</h2>
 
-    <div class="card-body">
-        <h5 class="card-text card-footer">
-            Auteur : {{ book.author }}
-        </h5>
+            <h5 class="text-muted mb-4">Auteur : {{ book.author }}</h5>
 
-        <a href="{{ book.url }}" target="_blank">
-            <button type="button" class="btn btn-primary mt-3">Acheter</button>
-        </a>
+            <!-- Boutons d'action -->
+            <a href="{{ book.url }}" target="_blank" class="btn btn-primary mb-3">
+                Acheter
+            </a>
 
-        <form action="{{ url_for('one_author', id=book.author_id) }}" method="GET">
-            <button type="submit" class="btn btn-primary mt-3">Afficher détail auteur</button>
-        </form>
+            <form action="{{ url_for('one_author', id=book.author_id) }}" method="GET" class="mb-3">
+                <button type="submit" class="btn btn-info">Afficher détail auteur</button>
+            </form>
 
-        <form action="{{ url_for('add_favorite', book_id=book.id) }}" method="POST" class="mt-3">
-            <button type="submit" class="btn btn-success">Ajouter aux favoris</button>
-        </form>
+            {% if book in current_user.favorite_books %}
+                <!-- Retirer des favoris -->
+                <form action="{{ url_for('remove_favorite', book_id=book.id) }}" method="POST" class="mb-3">
+                    <button type="submit" class="btn btn-danger">Retirer des favoris</button>
+                </form>
+            {% else %}
+                <!-- Ajouter aux favoris -->
+                <form action="{{ url_for('add_favorite', book_id=book.id) }}" method="POST" class="mb-3">
+                    <button type="submit" class="btn btn-success">Ajouter aux favoris</button>
+                </form>
+            {% endif %}
 
-        <h6 class="card-text card-footer">
-            Prix : {{ book.price }} €
-        </h6>
+            <!-- Prix -->
+            <h4 class="text-success mt-4">Prix : {{ book.price }} €</h4>
+        </div>
     </div>
 </div>
 {% endblock %}

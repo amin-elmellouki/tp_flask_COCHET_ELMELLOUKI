@@ -116,7 +116,6 @@ def logout():
     return redirect(url_for("home"))
 
 @app.route("/authors")
-@login_required
 def list_authors():
     authors = get_all_authors() 
     return render_template("list_author.html", authors=authors)
@@ -136,6 +135,19 @@ def add_favorite(book_id):
         flash(f"'{book.title}' est déjà dans vos favoris.", 'info')
     return redirect(url_for("detail", id=book_id))
 
+@app.route("/remove/favorites/<int:book_id>", methods=["POST"])
+@login_required
+def remove_favorite(book_id):
+    book = get_book(book_id)
+    if not book:
+        return "Book not found", 404
+    if book in current_user.favorite_books:
+        current_user.favorite_books.remove(book)
+        db.session.commit()
+        flash(f"'{book.title}' a été retiré de vos favoris.", 'success')
+    else:
+        flash(f"'{book.title}' ne fait pas partie de vos favoris.", 'info')
+    return redirect(url_for("detail", id=book_id))
 
 
 @app.route('/favorites')
