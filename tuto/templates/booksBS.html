@@ -3,12 +3,13 @@
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='home.css')}}"> 
 {% endblock %}
+
 {% block content %}
-<h1>{{title}}</h1>
+<h1>{{ title }}</h1>
 <div class="sample">
     {% for x in books %}
-    <a href="{{url_for('detail', id=x.id)}}">
-    <img src="{{ url_for('static', filename='images/'+x.img) }}" alt="{{x.title}}" title="{{x.title}}">
+    <a href="{{ url_for('detail', id=x.id) }}">
+        <img src="{{ url_for('static', filename='images/' + x.img) }}" alt="{{ x.title }}" title="{{ x.title }}">
     </a>
     {% endfor %}
 </div>

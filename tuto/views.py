@@ -5,7 +5,7 @@ from wtforms import StringField, HiddenField, PasswordField
 from wtforms.validators import DataRequired
 from hashlib import sha256
 from .app import app, db
-from .models import Author, User, get_author, get_all_authors, get_book, get_all_books, get_favorite_books
+from .models import Author, User, get_author, get_all_authors, get_book, get_all_books, get_favorite_books, Book
 
 class AuthorForm(FlaskForm):
     id = HiddenField('id') 
@@ -13,10 +13,17 @@ class AuthorForm(FlaskForm):
 
 @app.route("/")
 def home():
+    query = request.args.get('search')
+    if query:
+        books = Book.query.filter(Book.title.ilike(f'%{query}%')).all()
+    else:
+        books = Book.query.all()
+    
     return render_template(
         "booksBS.html",
         title="My Books !",
-        books=get_all_books()
+        books=books,
+        search_route=url_for('home')
     )
 
 @app.route("/detail/<int:id>")
@@ -115,10 +122,15 @@ def logout():
     logout_user()
     return redirect(url_for("home"))
 
-@app.route("/authors")
+@app.route('/authors', methods=['GET'])
 def list_authors():
-    authors = get_all_authors() 
-    return render_template("list_author.html", authors=authors)
+    query = request.args.get('search')
+    if query:
+        authors = Author.query.filter(Author.name.ilike(f'%{query}%')).all()
+    else:
+        authors = Author.query.all()
+
+    return render_template('list_author.html', authors=authors, search_route=url_for('list_authors')) 
 
 
 @app.route("/add/favorites/<int:book_id>", methods=["POST"])
@@ -155,3 +167,4 @@ def remove_favorite(book_id):
 def list_fav():
     favorites = get_favorite_books(current_user)
     return render_template('favorites.html', books=favorites)
+
