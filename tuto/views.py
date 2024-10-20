@@ -1,8 +1,8 @@
 from flask import url_for, redirect, render_template, flash, request
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_wtf import FlaskForm
-from wtforms import StringField, HiddenField, PasswordField, FloatField, SubmitField
-from wtforms.validators import DataRequired, Optional
+from wtforms import StringField, HiddenField, PasswordField, FloatField, SubmitField, SelectField  
+from wtforms.validators import DataRequired, Optional, URL
 from hashlib import sha256
 from .app import app, db
 from .models import Author, User, get_author, get_all_authors, get_book, get_all_books, get_favorite_books, Book
@@ -41,7 +41,68 @@ def detail(id):
         prev_book = Book.query.order_by(Book.id.desc()).first()
 
     return render_template("detail.html", book=book, next_book=next_book, prev_book=prev_book)
-    
+
+
+class BookForm(FlaskForm):
+    id = HiddenField('id')
+    title = StringField('Title', validators=[DataRequired()]) 
+    price = FloatField('Price', validators=[DataRequired()])
+    url = StringField('URL', validators=[DataRequired(), URL()])
+    img = StringField('Image URL', validators=[DataRequired()])
+    author_id = SelectField('Author', coerce=int)
+    submit = SubmitField('Submit')
+
+@app.route('/add/book', methods=['GET', 'POST'])
+def add_book():
+    form = BookForm()
+
+    form.author_id.choices = [(a.id, a.name) for a in Author.query.all()]
+
+    if form.validate_on_submit():
+        new_book = Book(
+            title=form.title.data,
+            price=form.price.data,
+            url=form.url.data,
+            img=form.img.data,
+            author_id=form.author_id.data
+        )
+        db.session.add(new_book)
+        db.session.commit()
+        flash("Le livre a été ajouté avec succès.", "success")
+        return redirect(url_for('home'))
+
+    return render_template('add_book.html', form=form, book=None)
+
+@app.route('/edit/book/<int:book_id>', methods=['GET', 'POST'])
+def edit_book(book_id):
+    book = Book.query.get_or_404(book_id)
+    form = BookForm(obj=book)
+
+    form.author_id.choices = [(a.id, a.name) for a in Author.query.all()]
+
+    if form.validate_on_submit():
+        book.title = form.title.data
+        book.price = form.price.data
+        book.url = form.url.data
+        book.img = form.img.data
+        book.author_id = form.author_id.data
+        db.session.commit()
+        flash("Le livre a été mis à jour avec succès.", "success")
+        return redirect(url_for('home'))
+
+    return render_template('add_book.html', form=form, book=book)
+
+@app.route('/delete_book/<int:book_id>', methods=['POST'])
+@login_required
+def delete_book(book_id):
+    book = Book.query.get(book_id)
+    if book:
+        db.session.delete(book)
+        db.session.commit()
+        flash('Le livre a été supprimé avec succès.', 'success')
+    else:
+        flash('Livre introuvable.', 'danger')
+    return redirect(url_for('home'))
 
 @app.route("/add/author", methods=["GET", "POST"])
 def add_author():
