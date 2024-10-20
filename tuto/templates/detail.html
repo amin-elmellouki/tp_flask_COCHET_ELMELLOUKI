@@ -42,6 +42,12 @@
 
             <!-- Prix -->
             <h4 class="text-success mt-4">Prix : {{ book.price }} €</h4>
+
+             <!-- Boutons Précédent et Suivant -->
+             <div class="mt-4">
+                <a href="{{ url_for('detail', id=prev_book.id) }}" class="btn btn-secondary">Livre Précédent</a>
+                <a href="{{ url_for('detail', id=next_book.id) }}" class="btn btn-secondary ms-2">Livre Suivant</a>
+            </div>
         </div>
     </div>
 </div>
