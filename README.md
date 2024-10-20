@@ -59,7 +59,7 @@ flask run
 - Ajout d'une page affichant tous les auteurs<br>
 - Ajout des livres écris par l'auteur sur sa page de détail<br>
 - Retirer un livre des favoris depuis sa page de détail<br>
-- Accéder aux détails de l'auteur d'un livre à partir de la page de déatil du livre<br>
+- Accéder aux détails de l'auteur d'un livre à partir de la page de détail du livre<br>
 - Amélioration du défilement (scroll) avec l'ajout d'un bouton d'un retour en haut de page<br>
 - Ajout d'une page affichant tous les favoris d'un utilisateur
 - Ajout d'une inscription au site web pour les personnes n'ayant pas de compte
