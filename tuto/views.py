@@ -83,7 +83,7 @@ def save_author():
             db.session.add(author)
 
         db.session.commit()
-        flash(f"Auteur '{author.name}' enregistré avec succès!", 'success')
+        flash(f"Auteur'{author.name}' enregistré avec succès!", 'success')
         return redirect(url_for('one_author', id=author.id))
 
     return render_template("add-author.html", form=form)
@@ -183,3 +183,12 @@ def list_fav():
     favorites = get_favorite_books(current_user)
     return render_template('favorites.html', books=favorites)
 
+@app.route('/livre_pagine')
+def livre_pagine():
+    query = request.args.get('search')
+    if query:
+        authors = Author.query.filter(Author.name.ilike(f'%{query}%')).all()
+    else:
+        authors = Author.query.order_by(Author.name).all()
+
+    return render_template('livre_pagine.html', authors=authors)

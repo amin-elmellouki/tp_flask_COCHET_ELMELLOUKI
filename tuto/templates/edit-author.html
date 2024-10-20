@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="mb-4">Edit Author: {{ author.name }}</h1>
+    <h1 class="mb-4">Modifier l'auteur: {{ author.name }}</h1>
     <form role="form" method="POST" action="{{ url_for('save_author') }}">
         {{ form.hidden_tag() }}
 

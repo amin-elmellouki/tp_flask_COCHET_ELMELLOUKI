@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-  <h1>Favorite Books</h1>
+  <h1>Livres favoris</h1>
   {% for book in books %}
     <a href="{{ url_for('detail', id=book.id) }}">
       <img src="{{ url_for('static', filename='images/' + book.img) }}" alt="{{ book.title }}" title="{{ book.title }}">

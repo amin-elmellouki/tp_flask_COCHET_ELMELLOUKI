@@ -16,9 +16,6 @@
     <title>Ma bibliothèque SF</title>
     {% endblock %}
 </head>
-<a href="#" id="back-to-top" class="btn btn-secondary back-to-top">
-    <i class="fas fa-arrow-up"></i>
-</a>
 <body>
     <header>
         <!-- Fixed navbar -->
@@ -31,11 +28,15 @@
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <ul class="navbar-nav me-auto mb-2 mb-md-0">
                         <!-- Lien vers l'affichage des livres -->
-                        <li class="nav-item ms-3">
-                            <a class="nav-link active" aria-current="page" href="{{ url_for('list_authors') }}">Authors</a>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{{ url_for('list_authors') }}">Auteurs</a>
+                        </li>
+                        <!-- Lien vers les livres paginés -->
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{ url_for('livre_pagine') }}">Livres par auteurs</a>
                         </li>
                         <!-- Lien vers l'affichage des auteurs -->
-                        <li class="nav-item ms-3">
+                        <li class="nav-item">
                             <a class="nav-link active" href="{{ url_for('list_fav') }}">Favoris</a>
                         </li>
                     </ul>
@@ -92,36 +93,15 @@
         </div>
     </main>
     
-    <footer class="footer mt-auto py-5 bg-dark text-white">
-        <div class="container text-center">
-            <h5>À propos de nous</h5>
-            <p>
-                Ma Bibliothèque SF est une plateforme dédiée aux amateurs de science-fiction. 
-                Explorez une large sélection de livres et découvrez vos auteurs préférés.
-            </p>
-            <p class="text-muted">&copy; 2024 Ma Bibliothèque SF - Tous droits réservés.</p>
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container">
+            <span class="text-muted">Place sticky footer content here.</span>
         </div>
     </footer>
-    
 
     {% block scripts %}
-    <!-- Optional JavaScript -->
-    {{ bootstrap.load_js() }}
-    <!-- Script pour le bouton "Retour en haut" -->
-    <script>
-        window.onscroll = function() {
-            const backToTopButton = document.getElementById("back-to-top");
-            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-                backToTopButton.style.display = "block";
-            } else {
-                backToTopButton.style.display = "none";
-            }
-        };
-        document.getElementById("back-to-top").addEventListener("click", function(event){
-            event.preventDefault();
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        });
-    </script>
-{% endblock %}
+        <!-- Optional JavaScript -->
+        {{ bootstrap.load_js() }}
+    {% endblock %}
 </body>
 </html>
