@@ -8,6 +8,14 @@
     <body>
         <header>
             <h1>{{ title }}</h1>
+            <ul class="nav navbar-nav navbar-right">
+                {% if current_user.is_authenticated %}
+                    <li><a>{{ current_user.username }}</a></li>
+                    <li><a href="{{ url_for('logout') }}">
+                        <span class="glyphicon glyphicon-log-out" title="Logout"></span>
+                    </a></li>
+                {% endif %}
+            </ul>
         </header>
         {% block main %}{% endblock %}
     </body>

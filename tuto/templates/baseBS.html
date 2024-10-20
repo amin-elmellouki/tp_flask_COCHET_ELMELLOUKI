@@ -1,65 +1,135 @@
 <!doctype html>
 <html lang="fr">
-    <head>
-        {% block head %}
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<head>
+    {% block head %}
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        {% block styles %}
-            <!-- Bootstrap CSS -->
-            {{ bootstrap.load_css() }}
-        {% endblock %}
+    {% block styles %}
+        <!-- Bootstrap CSS -->
+        {{ bootstrap.load_css() }}
+        <!-- FontAwesome CSS for icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    {% endblock %}
 
-        <title>Ma bibliothèque SF</title>
-        {% endblock %}
-    </head>
-    <body>
-        <header>
-            <!-- Fixed navbar -->
-            <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-              <div class="container-fluid">
-                <a class="navbar-brand" href="#">My Books</a>
+    <title>Ma bibliothèque SF</title>
+    {% endblock %}
+</head>
+<a href="#" id="back-to-top" class="btn btn-secondary back-to-top">
+    <i class="fas fa-arrow-up"></i>
+</a>
+<body>
+    <header>
+        <!-- Fixed navbar -->
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{{ url_for('home') }}">My Books</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-                  <span class="navbar-toggler-icon"></span>
+                    <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarCollapse">
-                  <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                    <li class="nav-item">
-                      <a class="nav-link active" aria-current="page" href="booksBS.html">Home</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="booksBS.html">Link</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link disabled">Disabled</a>
-                    </li>
-                  </ul>
-                  <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                  </form>
+                    <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                        <!-- Lien vers l'affichage des auteurs -->
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{{ url_for('list_authors') }}">Auteurs</a>
+                        </li>
+                        <!-- Lien vers l'affichage des favoris -->
+                        <li class="nav-item ms-3">
+                            <a class="nav-link active" href="{{ url_for('list_fav') }}">Favoris</a>
+                        </li>
+                        <!-- Lien vers les livres paginés -->
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{ url_for('livre_pagine') }}">Livres par auteurs</a>
+                        </li>
+                    </ul>
+                    
+                    <!-- Barre de recherche -->
+                    <form class="d-flex" role="search" action="{{ search_route }}" method="GET">
+                        <input class="form-control me-2" type="search" name="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+
+                    <!-- Bouton vers la page de recherche avancée -->
+                    <a href="{{ url_for('advanced_search') }}" class="btn btn-outline-light">
+                        Recherche avancée
+                    </a>
+
+                    <!-- Ajout du menu utilisateur à droite -->
+                    <ul class="navbar-nav navbar-right">
+                        {% if current_user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link">{{ current_user.username }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('logout') }}">
+                                    <i class="fas fa-sign-out-alt" title="Logout"></i>
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('login') }}">
+                                    <i class="fas fa-sign-in-alt"></i> Login
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
                 </div>
-              </div>
-            </nav>
-          </header>
-        <!-- Your page content -->
-        <main class="flex-shrink-0">
-            <div class="container">
-     
+            </div>
+        </nav>
+    </header>
+
+    <main class="flex-shrink-0">
+        <div class="container">
+
+            <!-- Bloc pour afficher les messages flash -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="mt-4">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}" role="alert">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+            
             {% block content %}
-        
             {% endblock %}
-            </div>
-        </main>
-        <footer class="footer mt-auto py-3 bg-light">
-            <div class="container">
-              <span class="text-muted">Place sticky footer content here.</span>
-            </div>
-          </footer>
-        {% block scripts %}
-            <!-- Optional JavaScript -->
-            {{ bootstrap.load_js() }}
-        {% endblock %}
-    </body>
+        </div>
+    </main>
+    
+    <footer class="footer mt-auto py-5 bg-dark text-white">
+        <div class="container text-center">
+            <h5>À propos de nous</h5>
+            <p>
+                Ma Bibliothèque SF est une plateforme dédiée aux amateurs de science-fiction. 
+                Explorez une large sélection de livres et découvrez vos auteurs préférés.
+            </p>
+            <p class="text-muted">&copy; 2024 Ma Bibliothèque SF - Tous droits réservés.</p>
+        </div>
+    </footer>
+    
+
+    {% block scripts %}
+    <!-- Optional JavaScript -->
+    {{ bootstrap.load_js() }}
+    <!-- Script pour le bouton "Retour en haut" -->
+    <script>
+        window.onscroll = function() {
+            const backToTopButton = document.getElementById("back-to-top");
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                backToTopButton.style.display = "block";
+            } else {
+                backToTopButton.style.display = "none";
+            }
+        };
+        document.getElementById("back-to-top").addEventListener("click", function(event){
+            event.preventDefault();
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        });
+    </script>
+{% endblock %}
+</body>
 </html>

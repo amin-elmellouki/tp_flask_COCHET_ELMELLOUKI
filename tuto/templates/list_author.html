@@ -1,0 +1,24 @@
+{% extends "baseBS.html" %}
+
+{% block styles %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Liste des auteurs</h1>
+    <form action="{{ url_for('add_author', id=author_id) }}" method="GET" class="mb-3">
+        <button type="submit" class="btn btn-info">Ajouter un auteur</button>
+    </form>
+    <ul class="list-group">
+        {% for author in authors %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a href="{{ url_for('one_author', id=author.id) }}">{{ author.name }}</a>
+            {% set author_books_count = author.books.all() | length %}
+            <span class="badge badge-primary badge-pill">{{ author_books_count }}</span>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

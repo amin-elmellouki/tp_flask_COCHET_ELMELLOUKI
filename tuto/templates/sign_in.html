@@ -1,0 +1,42 @@
+{% extends "baseBS.html" %}
+
+{% block styles %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Créer un compte</h1>
+
+    <form class="form-horizontal" role="form" method="POST" action="{{ url_for('register') }}">
+        {{ form.hidden_tag() }}
+
+        <div class="form-group {% if form.username.errors %}has-error{% endif %}">
+            {{ form.username.label(class="form-label") }}
+            {{ form.username(size=50, class_="form-control", placeholder="Entrez votre nom d'utilisateur") }}
+            {% if form.username.errors %}
+                <div class="alert alert-danger mt-2">
+                    {% for error in form.username.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group {% if form.password.errors %}has-error{% endif %}">
+            {{ form.password.label(class="form-label") }}
+            {{ form.password(size=50, class_="form-control", placeholder="Entrez votre mot de passe") }}
+            {% if form.password.errors %}
+                <div class="alert alert-danger mt-2">
+                    {% for error in form.password.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Créer un compte</button>
+    </form>
+</div>
+{% endblock %}

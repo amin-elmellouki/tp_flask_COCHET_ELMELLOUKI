@@ -36,3 +36,21 @@ def loaddb(filename):
                  author_id=a.id)
         db.session.add(o)
     db.session.commit()
+
+@app.cli.command()
+def syncdb():
+    '''Creates all missing tables.'''
+    db.create_all()
+
+@app.cli. command ()
+@click.argument('username')
+@click.argument('password')
+def newuser(username, password):
+    '''Adds a new user.'''
+    from .models import User
+    from hashlib import sha256
+    m = sha256()
+    m.update(password.encode())
+    u = User(username=username, password=m.hexdigest())
+    db.session.add(u)
+    db.session.commit()

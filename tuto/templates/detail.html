@@ -1,22 +1,59 @@
 {% extends 'baseBS.html' %}
+
 {% block styles %}
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='home.css')}}"> 
 {% endblock %}
+
 {% block content %}
-<div class="card border-light mb-3 mycard">
-    <div class="card-header">{{ book.title }}</div>
-    <a href="{{ book.url }}" target='_blank'>
+<div class="container mt-5">
+    <div class="row">
+        <!-- Colonne pour l'image du livre -->
+        <div class="col-md-3">
             <img src="{{ url_for('static', filename='images/'+book.img) }}" alt="Couverture de {{ book.title }}"
-                    title="{{ book.title }}" class="card-img-top" />
-    </a>
-    <div class="card-body">
-            <h5 class="card-text card-footer">
-                    Auteur : {{ book.author }}
-            </h5>
-            <h6 class="card-text card-footer">
-                Prix : {{ book.price }} €
-        </h6>
+                 title="{{ book.title }}" class="custom-img rounded">
+        </div>
+
+        <!-- Colonne pour les détails et actions -->
+        <div class="col-md-8">
+            <h2 class="mb-3">{{ book.title }}</h2>
+
+            <h5 class="text-muted mb-4">Auteur : {{ book.author }}</h5>
+
+            <!-- Boutons d'action -->
+            <a href="{{ book.url }}" target="_blank" class="btn btn-primary mb-3">
+                Acheter
+            </a>
+
+            <form action="{{ url_for('one_author', id=book.author_id) }}" method="GET" class="mb-3">
+                <button type="submit" class="btn btn-info">Afficher détail auteur</button>
+            </form>
+
+            <form action="{{ url_for('edit_book', book_id=book.id) }}" method="GET" class="mb-3">
+                <button type="submit" class="btn btn-info">Modifier livre</button>
+            </form>
+
+            {% if book in current_user.favorite_books %}
+                <!-- Retirer des favoris -->
+                <form action="{{ url_for('remove_favorite', book_id=book.id) }}" method="POST" class="mb-3">
+                    <button type="submit" class="btn btn-danger">Retirer des favoris</button>
+                </form>
+            {% else %}
+                <!-- Ajouter aux favoris -->
+                <form action="{{ url_for('add_favorite', book_id=book.id) }}" method="POST" class="mb-3">
+                    <button type="submit" class="btn btn-success">Ajouter aux favoris</button>
+                </form>
+            {% endif %}
+
+            <!-- Prix -->
+            <h4 class="text-success mt-4">Prix : {{ book.price }} €</h4>
+
+             <!-- Boutons Précédent et Suivant -->
+             <div class="mt-4">
+                <a href="{{ url_for('detail', id=prev_book.id) }}" class="btn btn-secondary">Livre Précédent</a>
+                <a href="{{ url_for('detail', id=next_book.id) }}" class="btn btn-secondary ms-2">Livre Suivant</a>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
