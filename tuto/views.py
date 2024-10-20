@@ -1,8 +1,8 @@
 from flask import url_for, redirect, render_template, flash, request
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_wtf import FlaskForm
-from wtforms import StringField, HiddenField, PasswordField
-from wtforms.validators import DataRequired
+from wtforms import StringField, HiddenField, PasswordField, FloatField, SubmitField
+from wtforms.validators import DataRequired, Optional
 from hashlib import sha256
 from .app import app, db
 from .models import Author, User, get_author, get_all_authors, get_book, get_all_books, get_favorite_books, Book
@@ -83,7 +83,7 @@ def save_author():
             db.session.add(author)
 
         db.session.commit()
-        flash(f"Auteur'{author.name}' enregistré avec succès!", 'success')
+        flash(f"Auteur '{author.name}' enregistré avec succès!", 'success')
         return redirect(url_for('one_author', id=author.id))
 
     return render_template("add-author.html", form=form)
@@ -183,6 +183,38 @@ def list_fav():
     favorites = get_favorite_books(current_user)
     return render_template('favorites.html', books=favorites)
 
+
+class AdvancedSearchForm(FlaskForm):
+    title = StringField('Titre', validators=[Optional()])
+    min_price = FloatField('Prix Minimum', validators=[Optional()])
+    max_price = FloatField('Prix Maximum', validators=[Optional()])
+    author = StringField('Auteur', validators=[Optional()])
+    submit = SubmitField('Rechercher')
+
+@app.route('/advanced_search', methods=['GET', 'POST'])
+def advanced_search():
+    form = AdvancedSearchForm()
+
+    books = Book.query
+
+    if form.validate_on_submit():
+        if form.title.data:
+            books = books.filter(Book.title.ilike(f'%{form.title.data}%'))
+        
+        if form.author.data:
+            books = books.join(Author).filter(Author.name.ilike(f'%{form.author.data}%'))
+        
+        if form.min_price.data:
+            books = books.filter(Book.price >= form.min_price.data)
+        
+        if form.max_price.data:
+            books = books.filter(Book.price <= form.max_price.data)
+
+        books = books.all()
+
+    return render_template('advanced_search.html', form=form, books=books)
+
+
 @app.route('/livre_pagine')
 def livre_pagine():
     query = request.args.get('search')
@@ -190,5 +222,4 @@ def livre_pagine():
         authors = Author.query.filter(Author.name.ilike(f'%{query}%')).all()
     else:
         authors = Author.query.order_by(Author.name).all()
-
     return render_template('livre_pagine.html', authors=authors)
