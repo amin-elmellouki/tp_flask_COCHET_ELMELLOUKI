@@ -2,22 +2,29 @@ h1 {
     color: red;
 }
 
-div.sample{
+div.sample {
     text-align: center;
     margin-left: 25%;
     margin-right: 25%;
-    
 }
 
-div.sample > a > img{
+div.sample > a > img {
     width: 7em;
+    height: auto;
+    object-fit: cover;
 }
 
-main{
+div.sample > a > img:hover {
+    transform: scale(1.05);
+    transition: transform 0.5s ease;
+}
+
+
+main {
     margin-top: 8em;
 }
 
-footer{
+footer {
     position: fixed;
     bottom: 0;
     width: 100%;
@@ -27,9 +34,9 @@ main > .container {
     padding: 60px 15px 0;
 }
 
-div.mycard{
-    margin: auto; 
-    width: 18rem; 
+div.mycard {
+    margin: auto;
+    width: 18rem;
 }
 
 .custom-img {
