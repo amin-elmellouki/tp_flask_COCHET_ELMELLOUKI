@@ -137,6 +137,44 @@ def logout():
     logout_user()
     return redirect(url_for("home"))
 
+class RegisterForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Register')
+    
+    def create_user(self):
+        # Hacher le mot de passe avant de l'enregistrer
+        m = sha256()
+        m.update(self.password.data.encode())
+        hashed_password = m.hexdigest()
+        
+        new_user = User(username=self.username.data, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+        return new_user
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    form = RegisterForm()
+    
+    if form.validate_on_submit():
+        # Vérifier si le nom d'utilisateur existe déjà
+        existing_user = User.query.filter_by(username=form.username.data).first()
+        if existing_user:
+            flash('Ce nom d\'utilisateur est déjà pris, veuillez en choisir un autre.', 'danger')
+            return redirect(url_for('register'))
+        
+        # Créer et enregistrer le nouvel utilisateur
+        new_user = form.create_user()
+        flash(f"Compte créé avec succès pour {new_user.username}!", 'success')
+        
+        # Connecter automatiquement l'utilisateur
+        login_user(new_user)
+        return redirect(url_for('home'))
+    
+    return render_template("sign_in.html", form=form)
+
+
 @app.route('/authors', methods=['GET'])
 def list_authors():
     query = request.args.get('search')
