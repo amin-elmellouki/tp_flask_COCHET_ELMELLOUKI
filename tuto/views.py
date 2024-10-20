@@ -31,7 +31,17 @@ def detail(id):
     book = get_book(id)
     if not book:
         return "Book not found", 404
-    return render_template("detail.html", book=book)
+    
+    next_book = Book.query.filter(Book.id > id).order_by(Book.id.asc()).first()
+    if not next_book:
+        next_book = Book.query.order_by(Book.id.asc()).first()
+
+    prev_book = Book.query.filter(Book.id < id).order_by(Book.id.desc()).first()
+    if not prev_book:
+        prev_book = Book.query.order_by(Book.id.desc()).first()
+
+    return render_template("detail.html", book=book, next_book=next_book, prev_book=prev_book)
+    
 
 @app.route("/add/author", methods=["GET", "POST"])
 def add_author():
