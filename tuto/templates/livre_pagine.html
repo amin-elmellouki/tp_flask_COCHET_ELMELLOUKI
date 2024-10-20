@@ -1,0 +1,21 @@
+{% extends "baseBS.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Liste des auteurs et leurs livres</h1>
+    <ul class="list-group">
+        {% for author in authors %}
+        <li class="list-group-item">
+            <h3>{{ author.name }}</h3>
+            <ul class="list-group">
+                {% for book in author.books %}
+                <a href="{{ url_for('detail', id=book.id) }}">
+                    <img src="{{ url_for('static', filename='images/' + book.img) }}" alt="{{ book.title }}" title="{{ book.title }}">
+                  </a>
+                {% endfor %}
+            </ul>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

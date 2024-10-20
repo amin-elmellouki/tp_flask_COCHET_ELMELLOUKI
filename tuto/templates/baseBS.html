@@ -29,7 +29,11 @@
                     <ul class="navbar-nav me-auto mb-2 mb-md-0">
                         <!-- Lien vers l'affichage des livres -->
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{{ url_for('list_authors') }}">Authors</a>
+                            <a class="nav-link active" aria-current="page" href="{{ url_for('list_authors') }}">Auteurs</a>
+                        </li>
+                        <!-- Lien vers les livres paginés -->
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{ url_for('livre_pagine') }}">Livres par auteurs</a>
                         </li>
                         <!-- Lien vers l'affichage des auteurs -->
                         <li class="nav-item">

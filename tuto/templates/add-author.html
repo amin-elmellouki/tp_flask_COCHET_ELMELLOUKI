@@ -6,13 +6,13 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="mb-4">Add New Author</h1>
+    <h1 class="mb-4">Ajout d'un nouvel auteur</h1>
     <form role="form" method="POST" action="{{ url_for('save_author') }}">
         {{ form.hidden_tag() }}
 
         <div class="form-group {% if form.name.errors %}has-error{% endif %}">
             {{ form.name.label(class="form-label") }}
-            {{ form.name(size=50, class_="form-control", placeholder="Enter author name") }}
+            {{ form.name(size=50, class_="form-control", placeholder="Nom de l'acteur") }}
             {% if form.name.errors %}
                 <div class="alert alert-danger mt-2">
                     {% for error in form.name.errors %}
