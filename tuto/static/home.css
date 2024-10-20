@@ -2,6 +2,12 @@ h1 {
     color: red;
 }
 
+div.sample {
+    text-align: center;
+    margin-left: 25%;
+    margin-right: 25%;
+}
+
 div.sample > a > img {
     width: 150px; 
     height: 200px;
@@ -10,17 +16,10 @@ div.sample > a > img {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
 }
 
-div.sample {
-    text-align: center;
-    margin-left: 25%;
-    margin-right: 25%;
-}
-
 div.sample > a > img:hover {
     transform: scale(1.05); 
     transition: transform 0.3s ease;
 }
-
 
 main {
     margin-top: 8em;
@@ -47,9 +46,8 @@ footer .text-muted {
     color: #6c757d !important;
 }
 
-
 main > .container {
-    padding: 60px 15px 0;
+    padding-top: 20px;
 }
 
 div.mycard {
@@ -99,7 +97,6 @@ div.mycard {
 .back-to-top:hover {
     background-color: #555;
 }
-
 
 html {
     scroll-behavior: smooth;

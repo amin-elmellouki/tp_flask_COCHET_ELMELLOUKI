@@ -48,6 +48,7 @@ def add_author():
     return render_template("add-author.html", form=form)
 
 @app.route("/edit/author/<int:id>")
+@login_required
 def edit_author(id):
     a = get_author(id)
     if not a:
@@ -79,12 +80,16 @@ def save_author():
   
 @app.route("/one_author/<int:id>")
 def one_author(id):
-    a = get_author(id)
-    if not a:
+    author = get_author(id)
+    if not author:
         return "Author not found", 404
+
+    author_books = Book.query.filter_by(author_id=id).all()
+
     return render_template(
         "detail_author.html",
-        author=a
+        author=author,
+        author_books=author_books
     )
 
 class LoginForm(FlaskForm):
